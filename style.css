@@ -1387,3 +1387,257 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
 .animate-fade-in {
   animation: fadeInStep 0.25s ease-out;
 }
+
+/* ==========================================================================
+   Modal / Bottom Sheet de Compartilhamento em Redes Sociais
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 25, 18, 0.65);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeInOverlay 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-sheet {
+  background-color: var(--bg-card);
+  width: 100%;
+  max-width: var(--max-largura);
+  border-radius: 24px 24px 0 0;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--sombra-lg);
+  border: 1px solid var(--borda-suave);
+  border-bottom: none;
+  animation: slideUpSheet 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 600px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+  .modal-sheet {
+    border-radius: 24px;
+    border-bottom: 1px solid var(--borda-suave);
+    max-height: 85vh;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--borda-suave);
+  background-color: var(--bg-card);
+}
+
+.modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--verde-floresta-800);
+}
+
+[data-theme="dark"] .modal-title-wrap {
+  color: var(--verde-folha-200);
+}
+
+.modal-title-wrap h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.btn-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--borda-suave);
+  background-color: var(--bg-card-subtle);
+  color: var(--texto-secundario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+}
+
+.btn-modal-close:hover {
+  background-color: var(--borda-suave);
+  color: var(--texto-principal);
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-desc {
+  font-size: 0.88rem;
+  color: var(--texto-mutado);
+}
+
+/* Grade de Redes Sociais */
+.social-share-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--borda-suave);
+  background-color: var(--bg-card-subtle);
+  text-decoration: none;
+  color: var(--texto-principal);
+  cursor: pointer;
+  transition: var(--transicao-suave);
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-md);
+}
+
+.social-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transicao-suave);
+}
+
+.social-text-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.social-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--texto-principal);
+}
+
+.social-sub {
+  font-size: 0.76rem;
+  color: var(--texto-mutado);
+}
+
+/* Cores específicas de cada rede */
+.social-whatsapp .social-icon-box {
+  background-color: rgba(37, 211, 102, 0.12);
+  color: #25d366;
+}
+.social-whatsapp:hover {
+  border-color: #25d366;
+}
+
+.social-instagram .social-icon-box {
+  background-color: rgba(225, 48, 108, 0.12);
+  color: #e1306c;
+}
+.social-instagram:hover {
+  border-color: #e1306c;
+}
+
+.social-facebook .social-icon-box {
+  background-color: rgba(24, 119, 242, 0.12);
+  color: #1877f2;
+}
+.social-facebook:hover {
+  border-color: #1877f2;
+}
+
+.social-x .social-icon-box {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: var(--texto-principal);
+}
+[data-theme="dark"] .social-x .social-icon-box {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+.social-x:hover {
+  border-color: var(--texto-principal);
+}
+
+.social-telegram .social-icon-box {
+  background-color: rgba(0, 136, 204, 0.12);
+  color: #0088cc;
+}
+.social-telegram:hover {
+  border-color: #0088cc;
+}
+
+/* Caixa de Geração de Imagem / Story */
+.story-generator-box {
+  background-color: var(--verde-folha-50);
+  border: 1px solid var(--verde-folha-200);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.story-generator-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--verde-floresta-800);
+  font-size: 0.92rem;
+  margin-bottom: 6px;
+}
+
+[data-theme="dark"] .story-generator-header {
+  color: var(--verde-folha-200);
+}
+
+.story-generator-desc {
+  font-size: 0.8rem;
+  color: var(--texto-mutado);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.story-download-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-generate-story {
+  padding: 12px 16px;
+  font-size: 0.88rem;
+}
+
+.btn-generate-feed {
+  padding: 11px 16px;
+  font-size: 0.85rem;
+}

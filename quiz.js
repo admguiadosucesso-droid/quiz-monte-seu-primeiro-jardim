@@ -212,7 +212,17 @@
 
     btnShareResult: document.getElementById('btn-share-result'),
     btnRestartQuiz: document.getElementById('btn-restart-quiz'),
-    toast: document.getElementById('toast')
+    toast: document.getElementById('toast'),
+
+    shareModal: document.getElementById('share-modal'),
+    btnCloseShareModal: document.getElementById('btn-close-share-modal'),
+    shareWhatsapp: document.getElementById('share-whatsapp'),
+    shareInstagram: document.getElementById('share-instagram'),
+    shareFacebook: document.getElementById('share-facebook'),
+    shareX: document.getElementById('share-x'),
+    shareTelegram: document.getElementById('share-telegram'),
+    btnDownloadStory: document.getElementById('btn-download-story'),
+    btnDownloadFeed: document.getElementById('btn-download-feed')
   };
 
   // --- Inicialização ---
@@ -636,25 +646,244 @@
     });
   }
 
-  // --- Compartilhar Resultado ---
-  function shareResult() {
+  // --- Modal e Compartilhamento em Redes Sociais ---
+  function openShareModal() {
     const scen = QUIZ_DATA.scenarios[state.scenario] || QUIZ_DATA.scenarios.varanda;
     const pl = QUIZ_DATA.plants[state.plant] || QUIZ_DATA.plants.tempero;
-    const text = `Montei meu primeiro jardim no Jardim Perene! Meu projeto: um cantinho de ${pl.phraseType} ${scen.shortTitle.toLowerCase()}. Descubra seu próximo passo: https://jardim-de-bolso-nu.vercel.app`;
+    const mode = getEffectiveCartMode();
 
-    if (navigator.share) {
-      navigator.share({
-        title: 'Quiz — Monte seu primeiro jardim · Jardim Perene',
-        text: text,
-        url: 'https://jardim-de-bolso-nu.vercel.app'
-      }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast('Link e resumo copiados para a área de transferência!');
-      }).catch(() => {
-        showToast('Resumo gerado com sucesso!');
-      });
+    let spacePhrase = 'perto da janela';
+    if (scen.id === 'varanda') spacePhrase = 'na varanda';
+    else if (scen.id === 'quintal') {
+      spacePhrase = mode === 'canteiro' ? 'no canteiro do quintal' : 'em vasos no quintal';
     }
+
+    const shareText = `Montei meu primeiro jardim no Jardim Perene! Meu projeto: um cantinho de ${pl.phraseType} ${spacePhrase}. Veja o que escolher para o seu espaço:`;
+    const shareUrl = 'https://jardim-de-bolso-nu.vercel.app';
+
+    // 1. WhatsApp
+    dom.shareWhatsapp.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+
+    // 2. Facebook
+    dom.shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+
+    // 3. X (Twitter)
+    dom.shareX.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+
+    // 4. Telegram
+    dom.shareTelegram.href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+
+    // Exibe o modal
+    dom.shareModal.style.display = 'flex';
+  }
+
+  function closeShareModal() {
+    dom.shareModal.style.display = 'none';
+  }
+
+  // --- Gerador de Imagem em Canvas para Story (9:16) ou Feed (1:1) ---
+  function generateAndShareCard(format = 'story') {
+    const isStory = format === 'story';
+    const width = 1080;
+    const height = isStory ? 1920 : 1080;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    const scen = QUIZ_DATA.scenarios[state.scenario] || QUIZ_DATA.scenarios.varanda;
+    const pl = QUIZ_DATA.plants[state.plant] || QUIZ_DATA.plants.tempero;
+    const mode = getEffectiveCartMode();
+    const availableItems = QUIZ_DATA.itemsByMode[mode];
+    const itemsMap = Object.fromEntries(availableItems.map((i) => [i.id, i]));
+
+    let spacePhrase = 'perto da janela';
+    if (scen.id === 'varanda') spacePhrase = 'na varanda';
+    else if (scen.id === 'quintal') {
+      spacePhrase = mode === 'canteiro' ? 'no canteiro do quintal' : 'em vasos no quintal';
+    }
+
+    showToast('Gerando imagem em alta resolução...');
+
+    const scenarioImg = new Image();
+    scenarioImg.crossOrigin = 'anonymous';
+    scenarioImg.src = scen.image;
+
+    const plantImg = new Image();
+    plantImg.crossOrigin = 'anonymous';
+    plantImg.src = pl.image;
+
+    Promise.all([
+      new Promise((res) => { scenarioImg.onload = res; scenarioImg.onerror = res; }),
+      new Promise((res) => { plantImg.onload = res; plantImg.onerror = res; })
+    ]).then(() => {
+      // Fundo degradê botânico escuro
+      const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+      bgGrad.addColorStop(0, '#0f281e');
+      bgGrad.addColorStop(0.5, '#1b4332');
+      bgGrad.addColorStop(1, '#091510');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Círculo de iluminação suave
+      ctx.fillStyle = 'rgba(82, 183, 136, 0.08)';
+      ctx.beginPath();
+      ctx.arc(width * 0.8, height * 0.15, 320, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Topo: Marca Jardim Perene
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 36px "Plus Jakarta Sans", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('JARDIM PERENE', width / 2, isStory ? 140 : 90);
+
+      ctx.fillStyle = '#74c69d';
+      ctx.font = '600 22px "Plus Jakarta Sans", system-ui, sans-serif';
+      ctx.fillText('PROJETO MONTE SEU PRIMEIRO JARDIM', width / 2, isStory ? 180 : 125);
+
+      // Moldura do Cenário
+      const cardY = isStory ? 230 : 160;
+      const cardH = isStory ? 600 : 420;
+      const cardW = width - 120;
+      const cardX = 60;
+      const radius = 32;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(cardX, cardY, cardW, cardH, radius);
+      ctx.clip();
+      if (scenarioImg.complete && scenarioImg.naturalWidth > 0) {
+        ctx.drawImage(scenarioImg, cardX, cardY, cardW, cardH);
+      } else {
+        ctx.fillStyle = '#2d6a4f';
+        ctx.fillRect(cardX, cardY, cardW, cardH);
+      }
+
+      // Overlay de contraste
+      const cardOverlay = ctx.createLinearGradient(cardX, cardY + cardH * 0.35, cardX, cardY + cardH);
+      cardOverlay.addColorStop(0, 'rgba(15, 40, 30, 0)');
+      cardOverlay.addColorStop(1, 'rgba(15, 40, 30, 0.88)');
+      ctx.fillStyle = cardOverlay;
+      ctx.fillRect(cardX, cardY, cardW, cardH);
+      ctx.restore();
+
+      // Badge com nome do Cenário
+      ctx.fillStyle = 'rgba(15, 40, 30, 0.85)';
+      ctx.beginPath();
+      ctx.roundRect(cardX + 30, cardY + 30, 270, 50, 25);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '600 20px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(scen.shortTitle, cardX + 54, cardY + 63);
+
+      // Avatar circular da Planta
+      const plantAvatarSize = isStory ? 140 : 110;
+      const plantAvatarX = width / 2;
+      const plantAvatarY = cardY + cardH - (isStory ? 40 : 20);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(plantAvatarX, plantAvatarY, (plantAvatarSize / 2) + 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#52b788';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(plantAvatarX, plantAvatarY, plantAvatarSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+      if (plantImg.complete && plantImg.naturalWidth > 0) {
+        ctx.drawImage(plantImg, plantAvatarX - (plantAvatarSize / 2), plantAvatarY - (plantAvatarSize / 2), plantAvatarSize, plantAvatarSize);
+      } else {
+        ctx.fillStyle = '#1b4332';
+        ctx.fillRect(plantAvatarX - (plantAvatarSize / 2), plantAvatarY - (plantAvatarSize / 2), plantAvatarSize, plantAvatarSize);
+      }
+      ctx.restore();
+
+      // Rótulo da Planta
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(pl.name, plantAvatarX, plantAvatarY + (plantAvatarSize / 2) + 38);
+
+      // Bloco de Resumo do Projeto
+      const summaryY = isStory ? 1040 : 660;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.beginPath();
+      ctx.roundRect(cardX, summaryY, cardW, isStory ? 540 : 290, 28);
+      ctx.fill();
+
+      ctx.fillStyle = '#52b788';
+      ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('SEU PROJETO CONCLUÍDO', width / 2, summaryY + 50);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 34px "Bricolage Grotesque", sans-serif';
+      ctx.fillText(`Um cantinho de ${pl.phraseType} ${spacePhrase}`, width / 2, summaryY + 105);
+
+      // Itens selecionados no carrinho
+      ctx.fillStyle = '#b7e4c7';
+      ctx.font = '600 20px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('Itens que levei do viveiro:', width / 2, summaryY + 160);
+
+      const itemsText = state.cart.map((id) => itemsMap[id] ? itemsMap[id].title : id).join('  ·  ');
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(itemsText, width / 2, summaryY + 205);
+
+      if (isStory) {
+        // Dica educativa para Story
+        ctx.fillStyle = 'rgba(82, 183, 136, 0.15)';
+        ctx.beginPath();
+        ctx.roundRect(cardX + 30, summaryY + 250, cardW - 60, 180, 20);
+        ctx.fill();
+
+        ctx.fillStyle = '#eaf8ed';
+        ctx.font = '500 24px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText('Dica: antes de regar, observe a luz do local', width / 2, summaryY + 325);
+        ctx.fillText('e sinta a umidade do substrato com a mão.', width / 2, summaryY + 370);
+      }
+
+      // Rodapé
+      ctx.fillStyle = '#74c69d';
+      ctx.font = '600 24px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Descubra o que plantar no seu espaço: jardim-de-bolso-nu.vercel.app', width / 2, height - (isStory ? 100 : 50));
+
+      // Conversão e Exportação
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const fileName = `meu-jardim-${format}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({
+            files: [file],
+            title: 'Meu Primeiro Jardim · Jardim Perene',
+            text: `Meu primeiro jardim ganhou forma no Jardim Perene! Confira o seu em https://jardim-de-bolso-nu.vercel.app`
+          }).then(() => {
+            showToast('Pronto para publicar!');
+          }).catch(() => {
+            downloadBlobFile(blob, fileName);
+          });
+        } else {
+          downloadBlobFile(blob, fileName);
+        }
+      }, 'image/png');
+    });
+  }
+
+  function downloadBlobFile(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Imagem pronta! Abra seu Instagram e publique no Story ou Feed.');
   }
 
   // --- Eventos Globais ---
@@ -737,8 +966,25 @@
       if (state.situationChoice) goToStep(5);
     });
 
-    // Tela de Resultado
-    dom.btnShareResult.addEventListener('click', shareResult);
+    // Tela de Resultado: Abrir Modal de Redes Sociais
+    dom.btnShareResult.addEventListener('click', openShareModal);
+    dom.btnCloseShareModal.addEventListener('click', closeShareModal);
+    dom.shareModal.addEventListener('click', (e) => {
+      if (e.target === dom.shareModal) closeShareModal();
+    });
+
+    // Ações das redes no modal
+    dom.shareInstagram.addEventListener('click', () => {
+      generateAndShareCard('story');
+    });
+
+    dom.btnDownloadStory.addEventListener('click', () => {
+      generateAndShareCard('story');
+    });
+
+    dom.btnDownloadFeed.addEventListener('click', () => {
+      generateAndShareCard('feed');
+    });
 
     dom.btnRestartQuiz.addEventListener('click', () => {
       state.step = 0;
