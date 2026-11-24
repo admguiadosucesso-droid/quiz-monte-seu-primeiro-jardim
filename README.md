@@ -1,18 +1,18 @@
-# Quiz — Monte seu primeiro jardim 🌱
+# Quiz — Monte seu primeiro jardim
 
 > **Aplicação Web Interativa · Jardim Perene**  
 > Um quiz interativo e educativo para orientar novos jardineiros a darem seus primeiros passos com segurança, escolhendo o espaço ideal, a planta adequada e os itens essenciais do viveiro.
 
 ---
 
-## 🔗 Links Oficiais
+## Links Oficiais
 
-- 🌿 **Aplicação Principal:** [Jardim Perene](https://jardim-de-bolso-nu.vercel.app)
-- 🐙 **Repositório GitHub do Quiz:** [quiz-monte-seu-primeiro-jardim](https://github.com/admguiadosucesso-droid/quiz-monte-seu-primeiro-jardim)
+- **Aplicação Principal:** [Jardim Perene](https://jardim-de-bolso-nu.vercel.app)
+- **Repositório GitHub do Quiz:** [quiz-monte-seu-primeiro-jardim](https://github.com/admguiadosucesso-droid/quiz-monte-seu-primeiro-jardim)
 
 ---
 
-## 📌 Sobre o Quiz
+## Sobre o Quiz
 
 O **Monte seu primeiro jardim** é um quiz interativo guiado em 4 etapas principais que reflete a mesma identidade visual botânica e acolhedora do aplicativo **Jardim Perene**:
 
@@ -24,16 +24,18 @@ O **Monte seu primeiro jardim** é um quiz interativo guiado em 4 etapas princip
 
 ---
 
-## 🎨 Identidade Visual & Design System
+## Identidade Visual & Design System
 
 - **Paleta Botânica**: Verde-floresta (`#1b4332`), Verde-folha (`#52b788`, `#74c69d`, `#d8f3dc`), Âmbar (`#e9a63a`) e fundo orgânico claro (`#f3f6f3`).
 - **Tipografia**: Bricolage Grotesque (títulos) & Plus Jakarta Sans (textos e botões).
+- **Ícones Premium**: Vetores SVG Lucide com acabamento refinado e sem emojis crus.
 - **Acessibilidade**: Contraste WCAG AAA, foco visível, rótulos semânticos e suporte a tema claro e escuro.
 - **Mobile-first**: Largura máxima de 480px, otimizada para smartphones e centralizada em telas maiores.
 
 ---
 
-## 🚀 Publicação & Deploy
+## Publicação & Deploy
 
 Desenvolvido em HTML5, CSS3 e JavaScript puro (Vanilla ES6+), ultra leve, rápido e sem dependências pesadas de compilação.
 Compatível com deploy contínuo na Vercel e instalação como Progressive Web App (PWA).
+

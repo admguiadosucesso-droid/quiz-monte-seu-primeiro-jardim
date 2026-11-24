@@ -240,11 +240,16 @@
     });
   }
 
-  // --- Feedback Toast ---
+  // --- Feedback Toast com Ícone Vetorial ---
   let toastTimer = null;
   function showToast(msg) {
     if (!dom.toast) return;
-    dom.toast.textContent = msg;
+    dom.toast.innerHTML = `
+      <div class="toast-inner">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>${msg}</span>
+      </div>
+    `;
     dom.toast.classList.add('active');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
@@ -440,7 +445,11 @@
       card.innerHTML = `
         <img src="${item.image}" alt="${item.title}" class="shelf-item-thumb">
         <strong class="shelf-item-title">${item.title}</strong>
-        <span class="shelf-item-btn">${inCart ? 'No carrinho' : '+ Adicionar'}</span>
+        <span class="shelf-item-btn">
+          ${inCart
+            ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>No carrinho</span>'
+            : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Adicionar</span>'}
+        </span>
       `;
 
       // Clique para adicionar ao carrinho
@@ -493,7 +502,9 @@
         itemEl.innerHTML = `
           <img src="${item.image}" alt="${item.title}">
           <span class="cart-filled-name">${item.title}</span>
-          <button type="button" class="btn-remove-cart-item" aria-label="Remover">&times;</button>
+          <button type="button" class="btn-remove-cart-item" aria-label="Remover">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         `;
 
         itemEl.addEventListener('click', () => {
@@ -629,7 +640,7 @@
   function shareResult() {
     const scen = QUIZ_DATA.scenarios[state.scenario] || QUIZ_DATA.scenarios.varanda;
     const pl = QUIZ_DATA.plants[state.plant] || QUIZ_DATA.plants.tempero;
-    const text = `🌱 Montei meu primeiro jardim no Jardim Perene! Meu projeto: um cantinho de ${pl.phraseType} ${scen.shortTitle.toLowerCase()}. Descubra seu próximo passo: https://jardim-de-bolso-nu.vercel.app`;
+    const text = `Montei meu primeiro jardim no Jardim Perene! Meu projeto: um cantinho de ${pl.phraseType} ${scen.shortTitle.toLowerCase()}. Descubra seu próximo passo: https://jardim-de-bolso-nu.vercel.app`;
 
     if (navigator.share) {
       navigator.share({
@@ -639,7 +650,7 @@
       }).catch(() => {});
     } else {
       navigator.clipboard.writeText(text).then(() => {
-        showToast('Link e resumo copiados para a área de transferência! 📋');
+        showToast('Link e resumo copiados para a área de transferência!');
       }).catch(() => {
         showToast('Resumo gerado com sucesso!');
       });

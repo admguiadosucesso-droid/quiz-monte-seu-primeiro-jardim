@@ -912,12 +912,16 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
 .shelf-item-btn {
   font-size: 0.68rem;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: var(--raio-pill);
   background-color: var(--verde-folha-100);
   color: var(--verde-floresta-800);
   border: 1px solid var(--verde-folha-200);
   margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 /* ==========================================================================
@@ -1014,6 +1018,28 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
   font-weight: 800;
   color: var(--texto-principal);
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.title-sprout-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--verde-folha-100);
+  color: var(--verde-floresta-800);
+  border: 1px solid var(--verde-folha-200);
+}
+
+.btn-text-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .result-desc {
@@ -1306,6 +1332,18 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
   border-top: 1px solid var(--borda-suave);
 }
 
+.footer-brand-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.footer-leaf-icon {
+  color: var(--verde-folha-500);
+}
+
 /* ==========================================================================
    Toast Notification
    ========================================================================== */
@@ -1327,6 +1365,17 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
   z-index: 999;
   text-align: center;
+}
+
+.toast-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast-inner svg {
+  color: var(--verde-folha-400);
+  flex-shrink: 0;
 }
 
 .toast-notification.active {
