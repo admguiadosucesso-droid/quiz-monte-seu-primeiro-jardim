@@ -1,0 +1,1340 @@
+/* ==========================================================================
+   Jardim Perene — Quiz: Monte seu primeiro jardim
+   Design System Oficial: Paleta Botânica, Tipografia & Micro-interações
+   ========================================================================== */
+
+:root {
+  /* Paleta Botânica Natural */
+  --verde-floresta-900: #0f281e;
+  --verde-floresta-800: #1b4332;
+  --verde-floresta-700: #2d6a4f;
+  --verde-floresta-600: #40916c;
+
+  --verde-folha-500: #52b788;
+  --verde-folha-400: #74c69d;
+  --verde-folha-200: #b7e4c7;
+  --verde-folha-100: #d8f3dc;
+  --verde-folha-50:  #eaf8ed;
+
+  --ambar-600: #d48b28;
+  --ambar-500: #e9a63a;
+  --ambar-400: #f4c06b;
+  --ambar-100: #fef4e5;
+
+  /* Superfícies e Textos */
+  --bg-app: #f3f6f3;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f8faf8;
+  --bg-shelf: #eaf1ec;
+  --texto-principal: #101c15;
+  --texto-secundario: #1b4332;
+  --texto-mutado: #274e3c;
+  --borda-suave: #dbe5de;
+  --borda-media: #c0d1c6;
+  --borda-destaque: #52b788;
+
+  /* Sombras Naturais */
+  --sombra-sm: 0 1px 3px rgba(20, 45, 33, 0.06), 0 1px 2px rgba(20, 45, 33, 0.04);
+  --sombra-md: 0 4px 12px rgba(20, 45, 33, 0.08), 0 2px 4px rgba(20, 45, 33, 0.04);
+  --sombra-lg: 0 12px 28px rgba(20, 45, 33, 0.12), 0 4px 8px rgba(20, 45, 33, 0.06);
+
+  /* Dimensões & Raios */
+  --max-largura: 480px;
+  --raio-card: 18px;
+  --raio-inner: 12px;
+  --raio-pill: 9999px;
+  --transicao-suave: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Suporte a Modo Escuro */
+[data-theme="dark"] {
+  --bg-app: #0d1511;
+  --bg-card: #15241d;
+  --bg-card-subtle: #1c2e25;
+  --bg-shelf: #14221b;
+  --texto-principal: #eef5f1;
+  --texto-secundario: #a3c2b2;
+  --texto-mutado: #739483;
+  --borda-suave: #223a2f;
+  --borda-media: #2f4e40;
+  --borda-destaque: #74c69d;
+  --verde-folha-50: #152d20;
+
+  --sombra-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --sombra-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --sombra-lg: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-app: #0d1511;
+    --bg-card: #15241d;
+    --bg-card-subtle: #1c2e25;
+    --bg-shelf: #14221b;
+    --texto-principal: #eef5f1;
+    --texto-secundario: #a3c2b2;
+    --texto-mutado: #739483;
+    --borda-suave: #223a2f;
+    --borda-media: #2f4e40;
+    --borda-destaque: #74c69d;
+    --verde-folha-50: #152d20;
+
+    --sombra-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --sombra-md: 0 4px 14px rgba(0, 0, 0, 0.4);
+    --sombra-lg: 0 12px 30px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ==========================================================================
+   Reset & Tipografia
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--texto-principal);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
+  font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  line-height: 1.25;
+}
+
+/* Layout Central Mobile */
+.app-layout {
+  width: 100%;
+  max-width: var(--max-largura);
+  min-height: 100vh;
+  background-color: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--sombra-md);
+}
+
+@media (min-width: 600px) {
+  body {
+    padding: 24px 12px;
+    background: radial-gradient(circle at 50% 0%, #e2ece4 0%, #cad8ce 100%);
+  }
+  [data-theme="dark"] body,
+  body:has([data-theme="dark"]) {
+    background: radial-gradient(circle at 50% 0%, #15221b 0%, #080d0a 100%);
+  }
+  .app-layout {
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: calc(100vh - 48px);
+    border: 1px solid var(--borda-suave);
+  }
+}
+
+/* ==========================================================================
+   Header Superior
+   ========================================================================== */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--borda-suave);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.brand-logo {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+.quiz-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: var(--raio-pill);
+  background-color: var(--verde-folha-50);
+  color: var(--verde-floresta-700);
+  border: 1px solid var(--verde-folha-200);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--borda-suave);
+  color: var(--texto-secundario);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-card-subtle);
+  border-color: var(--borda-media);
+}
+
+.theme-toggle .icon-moon { display: none; }
+.theme-toggle .icon-sun { display: block; }
+
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: block; }
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: none; }
+}
+
+/* ==========================================================================
+   Barra de Progresso
+   ========================================================================== */
+
+.progress-section {
+  padding: 12px 20px;
+  background-color: var(--bg-card-subtle);
+  border-bottom: 1px solid var(--borda-suave);
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.btn-step-back {
+  background: none;
+  border: none;
+  color: var(--texto-secundario);
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: var(--transicao-suave);
+}
+
+.btn-step-back:hover {
+  background-color: var(--verde-folha-50);
+  color: var(--verde-floresta-800);
+}
+
+.step-indicator {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--verde-floresta-700);
+}
+
+.progress-bar-track {
+  height: 6px;
+  width: 100%;
+  background-color: var(--borda-suave);
+  border-radius: var(--raio-pill);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--verde-folha-500), var(--verde-floresta-700));
+  border-radius: var(--raio-pill);
+  transition: width 0.35s ease;
+}
+
+/* ==========================================================================
+   Canvas do Cenário Persistente (Etapa 2 em diante)
+   ========================================================================== */
+
+.scenario-canvas {
+  padding: 14px 20px 0 20px;
+}
+
+.scenario-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--sombra-sm);
+  border: 1px solid var(--borda-suave);
+}
+
+.scenario-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.scenario-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 40, 30, 0.75) 0%, rgba(15, 40, 30, 0.2) 60%, transparent 100%);
+}
+
+.scenario-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(15, 40, 30, 0.75);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--raio-pill);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.plant-spotlight {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--raio-pill);
+  box-shadow: var(--sombra-md);
+  border: 1px solid var(--verde-folha-400);
+  animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .plant-spotlight {
+  background-color: rgba(21, 36, 29, 0.94);
+}
+
+.plant-preview-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.plant-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--verde-floresta-800);
+}
+
+[data-theme="dark"] .plant-badge {
+  color: var(--verde-folha-200);
+}
+
+/* ==========================================================================
+   Conteúdo Principal & Etapas
+   ========================================================================== */
+
+.quiz-container {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-step {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  animation: fadeInStep 0.3s ease-out;
+}
+
+@keyframes fadeInStep {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.step-header {
+  margin-bottom: 18px;
+}
+
+.step-category {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--verde-folha-500);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.step-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--texto-principal);
+  margin-bottom: 6px;
+}
+
+.step-lead {
+  font-size: 0.88rem;
+  color: var(--texto-mutado);
+}
+
+/* ==========================================================================
+   Tela 0: Abertura
+   ========================================================================== */
+
+.step-intro {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.intro-hero-card {
+  background: linear-gradient(145deg, var(--bg-card-subtle) 0%, var(--verde-folha-50) 100%);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-card);
+  padding: 28px 22px;
+  box-shadow: var(--sombra-sm);
+  text-align: center;
+}
+
+.intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-card);
+  color: var(--verde-floresta-700);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--raio-pill);
+  border: 1px solid var(--verde-folha-200);
+  margin-bottom: 18px;
+}
+
+.intro-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+  margin-bottom: 12px;
+}
+
+.intro-subtitle {
+  font-size: 0.95rem;
+  color: var(--texto-mutado);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.intro-preview-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.mini-card-preview {
+  background-color: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: 10px;
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+.mini-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--verde-folha-100);
+  color: var(--verde-floresta-800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   Grids & Cartões de Escolha (Etapas 1 e 2)
+   ========================================================================== */
+
+.cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.choice-card {
+  display: flex;
+  background-color: var(--bg-card);
+  border: 2px solid var(--borda-suave);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+  text-align: left;
+  position: relative;
+}
+
+.choice-card:hover {
+  border-color: var(--verde-folha-400);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-md);
+}
+
+.choice-card.selected {
+  border-color: var(--borda-destaque);
+  background-color: var(--verde-folha-50);
+  box-shadow: 0 0 0 1px var(--borda-destaque), var(--sombra-md);
+}
+
+.choice-card-media {
+  width: 108px;
+  min-width: 108px;
+  height: auto;
+  position: relative;
+  background-color: var(--bg-shelf);
+}
+
+.choice-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card-radio-indicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.45);
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: var(--transicao-suave);
+}
+
+.choice-card.selected .card-radio-indicator {
+  background-color: var(--verde-floresta-800);
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.choice-card-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.choice-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--verde-floresta-700);
+  margin-bottom: 2px;
+}
+
+.choice-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--texto-principal);
+  margin-bottom: 4px;
+}
+
+.choice-card-desc {
+  font-size: 0.8rem;
+  color: var(--texto-mutado);
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   Cards de Dica & Feedback Contextual
+   ========================================================================== */
+
+.tip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background-color: var(--bg-card-subtle);
+  border: 1px solid var(--verde-folha-200);
+  border-left: 4px solid var(--verde-folha-500);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+  box-shadow: var(--sombra-sm);
+}
+
+.tip-icon {
+  color: var(--verde-floresta-700);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tip-content {
+  flex: 1;
+}
+
+.tip-tag {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--verde-floresta-700);
+  margin-bottom: 2px;
+}
+
+.tip-text {
+  font-size: 0.86rem;
+  color: var(--texto-principal);
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   Etapa 3: Carrinho & Viveiro
+   ========================================================================== */
+
+.quintal-selector-card {
+  background-color: var(--verde-folha-50);
+  border: 1px solid var(--verde-folha-200);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.quintal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--verde-floresta-800);
+  margin-bottom: 10px;
+}
+
+.quintal-choices {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-pill-choice {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--raio-pill);
+  border: 1px solid var(--borda-media);
+  background-color: var(--bg-card);
+  color: var(--texto-principal);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+  text-align: center;
+}
+
+.btn-pill-choice.active {
+  background-color: var(--verde-floresta-800);
+  color: #ffffff;
+  border-color: var(--verde-floresta-800);
+}
+
+.recommendation-callout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--ambar-100);
+  border: 1px solid var(--ambar-400);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  color: #5c3b00;
+  margin-bottom: 14px;
+}
+
+[data-theme="dark"] .recommendation-callout {
+  background-color: #2e230a;
+  border-color: #634b15;
+  color: #ffdf94;
+}
+
+.recommendation-callout svg {
+  flex-shrink: 0;
+  color: var(--ambar-600);
+}
+
+/* Dropzone do Carrinho */
+.cart-dropzone {
+  background-color: var(--bg-card-subtle);
+  border: 2px dashed var(--borda-media);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 16px;
+  transition: var(--transicao-suave);
+}
+
+.cart-dropzone.drag-active {
+  border-color: var(--verde-folha-500);
+  background-color: var(--verde-folha-50);
+}
+
+.cart-dropzone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cart-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+}
+
+[data-theme="dark"] .cart-title-wrap {
+  color: var(--texto-principal);
+}
+
+.cart-counter-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--raio-pill);
+  background-color: var(--verde-folha-200);
+  color: var(--verde-floresta-900);
+}
+
+.cart-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.cart-slot {
+  min-height: 94px;
+  border: 1px solid var(--borda-suave);
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transicao-suave);
+}
+
+.cart-slot.empty {
+  border-style: dashed;
+}
+
+.slot-empty-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-mutado);
+  opacity: 0.6;
+}
+
+/* Item dentro do slot do carrinho */
+.cart-filled-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 4px;
+  position: relative;
+  cursor: pointer;
+  background-color: var(--bg-card);
+}
+
+.cart-filled-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 4px;
+}
+
+.cart-filled-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
+  color: var(--texto-principal);
+  max-width: 95%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-remove-cart-item {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: rgba(220, 53, 69, 0.9);
+  color: #ffffff;
+  border: none;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Prateleira da Loja / Viveiro */
+.nursery-shelf {
+  background-color: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.shelf-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--texto-secundario);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.shelf-item-card {
+  border: 1px solid var(--borda-suave);
+  background-color: var(--bg-card-subtle);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: var(--transicao-suave);
+}
+
+.shelf-item-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--verde-folha-400);
+  box-shadow: var(--sombra-sm);
+}
+
+.shelf-item-card.in-cart {
+  opacity: 0.45;
+  filter: grayscale(0.6);
+  border-style: dashed;
+}
+
+.shelf-item-card.recommended-item {
+  border-color: var(--verde-folha-400);
+  background-color: var(--verde-folha-50);
+}
+
+.shelf-item-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 6px;
+  background-color: var(--bg-shelf);
+}
+
+.shelf-item-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--texto-principal);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.shelf-item-btn {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--raio-pill);
+  background-color: var(--verde-folha-100);
+  color: var(--verde-floresta-800);
+  border: 1px solid var(--verde-folha-200);
+  margin-top: auto;
+}
+
+/* ==========================================================================
+   Etapa 4: Situação Real
+   ========================================================================== */
+
+.situation-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.situation-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: var(--bg-card);
+  border: 2px solid var(--borda-suave);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+  text-align: left;
+  width: 100%;
+}
+
+.situation-card:hover {
+  border-color: var(--verde-folha-400);
+  background-color: var(--bg-card-subtle);
+}
+
+.situation-card.selected {
+  border-color: var(--borda-destaque);
+  background-color: var(--verde-folha-50);
+}
+
+.situation-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--borda-suave);
+  color: var(--texto-secundario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: var(--transicao-suave);
+}
+
+.situation-card.selected .situation-letter {
+  background-color: var(--verde-floresta-800);
+  color: #ffffff;
+}
+
+.situation-text {
+  flex: 1;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+/* ==========================================================================
+   Tela 5: Resultado
+   ========================================================================== */
+
+.result-celebration-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: var(--raio-card);
+  padding: 20px;
+  box-shadow: var(--sombra-md);
+  margin-bottom: 18px;
+}
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--raio-pill);
+  background-color: var(--verde-folha-100);
+  color: var(--verde-floresta-800);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.result-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+  margin-bottom: 8px;
+}
+
+.result-desc {
+  font-size: 0.88rem;
+  color: var(--texto-mutado);
+  margin-bottom: 18px;
+}
+
+/* Showcase do Cenário */
+.result-hero-showcase {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--sombra-md);
+  margin-bottom: 18px;
+}
+
+.result-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.result-showcase-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 40, 30, 0.85) 0%, rgba(15, 40, 30, 0.25) 60%, transparent 100%);
+}
+
+.result-plant-overlay {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 6px 14px 6px 6px;
+  border-radius: var(--raio-pill);
+  box-shadow: var(--sombra-lg);
+  border: 1px solid var(--verde-folha-300);
+}
+
+[data-theme="dark"] .result-plant-overlay {
+  background-color: rgba(21, 36, 29, 0.95);
+}
+
+.result-plant-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+}
+
+.result-plant-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--verde-floresta-600);
+}
+
+.result-plant-meta strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+.result-scenario-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: rgba(15, 40, 30, 0.8);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: var(--raio-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Resumo */
+.result-summary-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-top: 1px solid var(--borda-suave);
+  padding-top: 16px;
+}
+
+.summary-line {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--verde-floresta-700);
+}
+
+.summary-value {
+  font-size: 0.95rem;
+  color: var(--texto-principal);
+  line-height: 1.45;
+}
+
+.result-cart-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.cart-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 6px;
+  border-radius: var(--raio-pill);
+  background-color: var(--bg-card-subtle);
+  border: 1px solid var(--borda-media);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.cart-chip img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Card CTA Guia de Bolso */
+.guide-cta-card {
+  background: linear-gradient(135deg, var(--verde-floresta-900) 0%, var(--verde-floresta-800) 100%);
+  color: #ffffff;
+  border-radius: var(--raio-card);
+  padding: 22px 20px;
+  margin-bottom: 18px;
+  box-shadow: var(--sombra-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guide-card-icon {
+  width: 52px;
+  height: 52px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guide-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide-cta-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.guide-cta-body {
+  font-size: 0.88rem;
+  color: #d8f3dc;
+  line-height: 1.5;
+}
+
+.guide-cta-body strong {
+  color: #ffffff;
+}
+
+.btn-guide-cta {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #74c69d 0%, #52b788 100%);
+  color: var(--verde-floresta-900);
+  border: none;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.btn-guide-cta:hover {
+  background: linear-gradient(135deg, #8fe0b3 0%, #68cf9d 100%);
+  transform: translateY(-2px);
+}
+
+/* Ações Secundárias */
+.result-secondary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Botões e Ações Globais
+   ========================================================================== */
+
+.step-actions {
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.mt-lg {
+  margin-top: 24px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 15px 22px;
+  border-radius: var(--raio-inner);
+  background-color: var(--verde-floresta-800);
+  color: #ffffff;
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+  text-decoration: none;
+  box-shadow: var(--sombra-md);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--verde-floresta-700);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-lg);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: var(--raio-inner);
+  background-color: transparent;
+  color: var(--texto-secundario);
+  border: 1px solid var(--borda-media);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transicao-suave);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-card-subtle);
+  border-color: var(--borda-destaque);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.app-footer {
+  text-align: center;
+  padding: 16px 20px;
+  font-size: 0.75rem;
+  color: var(--texto-mutado);
+  border-top: 1px solid var(--borda-suave);
+}
+
+/* ==========================================================================
+   Toast Notification
+   ========================================================================== */
+
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background-color: var(--verde-floresta-900);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: var(--raio-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: var(--sombra-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  z-index: 999;
+  text-align: center;
+}
+
+.toast-notification.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* Utilitários de Animação */
+.animate-fade-in {
+  animation: fadeInStep 0.25s ease-out;
+}

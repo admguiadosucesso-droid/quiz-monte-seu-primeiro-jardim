@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quiz — Monte seu primeiro jardim · Jardim Perene</title>
+  
+  <!-- Metas Sociais e SEO -->
+  <meta name="description" content="Seu primeiro jardim começa com 4 escolhas. Escolha um espaço, uma planta e o que levar do viveiro no Quiz oficial do Jardim Perene.">
+  <meta name="theme-color" content="#1b4332">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Fontes Oficiais Jardim Perene -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Container Central Mobile-First -->
+  <div class="app-layout">
+    
+    <!-- Cabeçalho Superior -->
+    <header class="app-header">
+      <div class="header-brand">
+        <a href="https://jardim-de-bolso-nu.vercel.app" class="brand-link" title="Ir para o Jardim Perene" target="_blank" rel="noopener noreferrer">
+          <img src="logo.svg" alt="Jardim Perene" class="brand-logo">
+        </a>
+        <span class="quiz-pill">Quiz Interativo</span>
+      </div>
+      <button type="button" class="theme-toggle" id="btn-theme" aria-label="Alternar modo escuro/claro" title="Alternar tema">
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </header>
+
+    <!-- Barra de Progresso do Quiz (Oculta na tela de abertura e de resultado) -->
+    <div class="progress-section" id="progress-section" style="display: none;">
+      <div class="progress-info">
+        <button type="button" class="btn-step-back" id="btn-back" aria-label="Voltar para etapa anterior">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <span>Voltar</span>
+        </button>
+        <span class="step-indicator" id="step-indicator">Etapa 1 de 4</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-bar" style="width: 25%;"></div>
+      </div>
+    </div>
+
+    <!-- Canvas do Cenário Persistente (Aparece a partir da Etapa 2) -->
+    <section class="scenario-canvas" id="scenario-canvas" style="display: none;">
+      <div class="scenario-image-wrapper">
+        <img id="scenario-canvas-img" src="" alt="Cenário selecionado" class="scenario-bg-img">
+        <div class="scenario-gradient-overlay"></div>
+        
+        <!-- Badge do Cenário -->
+        <div class="scenario-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="scenario-badge-text">Seu cantinho</span>
+        </div>
+
+        <!-- Planta inserida no cenário (Etapa 2 em diante) -->
+        <div class="plant-spotlight" id="plant-spotlight" style="display: none;">
+          <img id="plant-spotlight-img" src="" alt="Planta escolhida" class="plant-preview-avatar">
+          <span class="plant-badge" id="plant-badge-text">Planta</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conteúdo Principal Dinâmico -->
+    <main class="quiz-container" id="quiz-container">
+      
+      <!-- TELA 0: ABERTURA -->
+      <section class="quiz-step step-intro active" id="step-intro">
+        <div class="intro-hero-card">
+          <div class="intro-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Guia Interativo para Começar</span>
+          </div>
+          <h1 class="intro-title">Seu primeiro jardim começa com 4 escolhas</h1>
+          <p class="intro-subtitle">
+            Escolha um espaço, uma planta e o que levar da loja. No final, veja o que você montou e o que consultar antes de começar de verdade.
+          </p>
+
+          <div class="intro-preview-cards">
+            <div class="mini-card-preview">
+              <span class="mini-step-num">1</span>
+              <span>Cenário</span>
+            </div>
+            <div class="mini-card-preview">
+              <span class="mini-step-num">2</span>
+              <span>Planta</span>
+            </div>
+            <div class="mini-card-preview">
+              <span class="mini-step-num">3</span>
+              <span>Carrinho</span>
+            </div>
+            <div class="mini-card-preview">
+              <span class="mini-step-num">4</span>
+              <span>Chegada</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions mt-lg">
+          <button type="button" class="btn-primary" id="btn-start-quiz">
+            <span>Montar meu jardim</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ETAPA 1: ESCOLHA DO CENÁRIO -->
+      <section class="quiz-step" id="step-scenario" style="display: none;">
+        <div class="step-header">
+          <span class="step-category">1. Escolha o cenário</span>
+          <h2 class="step-title">Qual cantinho vamos transformar?</h2>
+          <p class="step-lead">Toque na opção que mais se aproxima do espaço que você tem disponível:</p>
+        </div>
+
+        <div class="cards-grid scenarios-grid" id="scenarios-grid">
+          <!-- Card 1: Janela -->
+          <article class="choice-card" data-scenario="janela" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-card-media">
+              <img src="images/cenarios/janela.webp" alt="Canto perto da janela com luz natural" loading="lazy">
+              <div class="card-radio-indicator">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="choice-card-body">
+              <h3 class="choice-card-title">Um canto perto da janela</h3>
+              <p class="choice-card-desc">Ambiente interno com boa luminosidade e ventilação direta.</p>
+            </div>
+          </article>
+
+          <!-- Card 2: Varanda -->
+          <article class="choice-card" data-scenario="varanda" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-card-media">
+              <img src="images/cenarios/varanda.webp" alt="Varanda aconchegante com vasos" loading="lazy">
+              <div class="card-radio-indicator">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="choice-card-body">
+              <h3 class="choice-card-title">Uma varanda com vasos</h3>
+              <p class="choice-card-desc">Espaço semiaberto ideal para cultivo vertical e vasos médios.</p>
+            </div>
+          </article>
+
+          <!-- Card 3: Quintal -->
+          <article class="choice-card" data-scenario="quintal" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-card-media">
+              <img src="images/cenarios/quintal.webp" alt="Espaço no quintal ao ar livre" loading="lazy">
+              <div class="card-radio-indicator">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="choice-card-body">
+              <h3 class="choice-card-title">Um espaço no quintal</h3>
+              <p class="choice-card-desc">Área ampla ao ar livre com solo direto ou espaço para canteiros.</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- Dica contextual da Etapa 1 -->
+        <div class="tip-card animate-fade-in" id="scenario-tip" style="display: none;">
+          <div class="tip-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </div>
+          <div class="tip-content">
+            <span class="tip-tag">Dica do Jardineiro</span>
+            <p class="tip-text">“Cantinho escolhido! Antes de levar uma muda para casa, observe quanto sol direto bate nesse lugar ao longo do dia.”</p>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" class="btn-primary" id="btn-next-scenario" disabled>
+            <span>Continuar</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ETAPA 2: ESCOLHA DA PLANTA -->
+      <section class="quiz-step" id="step-plant" style="display: none;">
+        <div class="step-header">
+          <span class="step-category">2. Escolha a primeira planta</span>
+          <h2 class="step-title">O que você quer ver crescendo nesse cantinho?</h2>
+          <p class="step-lead">Cada tipo de planta tem seu próprio ritmo e exigência de iluminação:</p>
+        </div>
+
+        <div class="cards-grid plants-grid" id="plants-grid">
+          <!-- Opção 1: Folhagem -->
+          <article class="choice-card" data-plant="folhagem" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-card-media">
+              <img src="images/plantas/folhagem.webp" alt="Exemplo de folhagem exuberante" loading="lazy">
+              <div class="card-radio-indicator">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="choice-card-body">
+              <div class="choice-badge">Verdura & Textura</div>
+              <h3 class="choice-card-title">Folhagem</h3>
+              <p class="choice-card-desc">Folhas marcantes como Monstera, Jiboia ou Zamioculca.</p>
+            </div>
+          </article>
+
+          <!-- Opção 2: Flor -->
+          <article class="choice-card" data-plant="flor" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-card-media">
+              <img src="images/plantas/flor.webp" alt="Exemplo de planta com flor vistosa" loading="lazy">
+              <div class="card-radio-indicator">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="choice-card-body">
+              <div class="choice-badge">Cores & Ciclos</div>
+              <h3 class="choice-card-title">Flor</h3>
+              <p class="choice-card-desc">Cores vivas como Antúrio, Lírio da Paz ou Lavanda.</p>
+            </div>
+          </article>
+
+          <!-- Opção 3: Tempero -->
+          <article class="choice-card" data-plant="tempero" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-card-media">
+              <img src="images/plantas/tempero.webp" alt="Exemplo de tempero aromático fresco" loading="lazy">
+              <div class="card-radio-indicator">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+            </div>
+            <div class="choice-card-body">
+              <div class="choice-badge">Aroma & Culinária</div>
+              <h3 class="choice-card-title">Tempero</h3>
+              <p class="choice-card-desc">Aromáticos e frescos como Alecrim, Manjericão ou Hortelã.</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- Dica dinâmica da Etapa 2 -->
+        <div class="tip-card animate-fade-in" id="plant-tip" style="display: none;">
+          <div class="tip-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </div>
+          <div class="tip-content">
+            <span class="tip-tag" id="plant-tip-title">Dica da Planta</span>
+            <p class="tip-text" id="plant-tip-text"></p>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" class="btn-primary" id="btn-next-plant" disabled>
+            <span>Continuar</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ETAPA 3: MONTE SEU CARRINHO -->
+      <section class="quiz-step" id="step-cart" style="display: none;">
+        <div class="step-header">
+          <span class="step-category">3. Monte seu carrinho</span>
+          <h2 class="step-title">Você chegou ao viveiro. Arraste 3 coisas para o seu carrinho.</h2>
+          <p class="step-lead">No celular, toque no item para colocar ou tirar da sua cesta:</p>
+        </div>
+
+        <!-- Opção prévia específica caso o usuário tenha escolhido Quintal -->
+        <div class="quintal-selector-card" id="quintal-selector-box" style="display: none;">
+          <div class="quintal-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22v-7"/><path d="M9 18l3 3 3-3"/><path d="M2 12h20"/><path d="M20 12a8 8 0 0 0-16 0"/></svg>
+            <strong>Como você prefere plantar no quintal?</strong>
+          </div>
+          <div class="quintal-choices">
+            <button type="button" class="btn-pill-choice active" data-type="vaso" id="btn-quintal-vaso">
+              <span>Em vasos ou floreiras</span>
+            </button>
+            <button type="button" class="btn-pill-choice" data-type="canteiro" id="btn-quintal-canteiro">
+              <span>Direto no canteiro/chão</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Destaque de recomendação -->
+        <div class="recommendation-callout" id="cart-recommendation-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+          <div id="cart-recommendation-text">
+            <strong>Exemplo recomendado para vaso:</strong> muda + vaso com furos + substrato adequado.
+          </div>
+        </div>
+
+        <!-- Carrinho de Compras (Área de Drop e Seleção) -->
+        <div class="cart-dropzone" id="cart-dropzone">
+          <div class="cart-dropzone-header">
+            <div class="cart-title-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+              <span>Seu Carrinho do Viveiro</span>
+            </div>
+            <span class="cart-counter-badge" id="cart-counter">0 de 3 itens</span>
+          </div>
+
+          <div class="cart-slots-grid" id="cart-slots">
+            <div class="cart-slot" data-slot="0">
+              <span class="slot-empty-label">Item 1</span>
+            </div>
+            <div class="cart-slot" data-slot="1">
+              <span class="slot-empty-label">Item 2</span>
+            </div>
+            <div class="cart-slot" data-slot="2">
+              <span class="slot-empty-label">Item 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Itens disponíveis na loja do viveiro -->
+        <div class="nursery-shelf">
+          <span class="shelf-label">Itens na prateleira do viveiro:</span>
+          <div class="shelf-grid" id="shelf-items-grid">
+            <!-- Itens preenchidos via JS -->
+          </div>
+        </div>
+
+        <!-- Dica contextual da escolha do carrinho -->
+        <div class="tip-card animate-fade-in" id="cart-item-tip" style="display: none;">
+          <div class="tip-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </div>
+          <div class="tip-content">
+            <span class="tip-tag" id="cart-tip-title">Avaliação do Viveiro</span>
+            <p class="tip-text" id="cart-tip-text"></p>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" class="btn-primary" id="btn-next-cart" disabled>
+            <span>Continuar</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ETAPA 4: RESOLVA UMA SITUAÇÃO REAL -->
+      <section class="quiz-step" id="step-situation" style="display: none;">
+        <div class="step-header">
+          <span class="step-category">4. Resolva uma situação real</span>
+          <h2 class="step-title">A muda chegou em casa. Qual é seu primeiro movimento?</h2>
+          <p class="step-lead">O momento da chegada é decisivo para a adaptação da planta. O que você faz primeiro?</p>
+        </div>
+
+        <div class="situation-options" id="situation-options">
+          <button type="button" class="situation-card" data-choice="1">
+            <span class="situation-letter">A</span>
+            <span class="situation-text">Colocar no canto que eu escolhi</span>
+            <span class="situation-check"></span>
+          </button>
+
+          <button type="button" class="situation-card" data-choice="2">
+            <span class="situation-letter">B</span>
+            <span class="situation-text">Regar logo para ela se adaptar</span>
+            <span class="situation-check"></span>
+          </button>
+
+          <button type="button" class="situation-card" data-choice="3" data-correct="true">
+            <span class="situation-letter">C</span>
+            <span class="situation-text">Conferir a luz do local e a umidade do substrato</span>
+            <span class="situation-check"></span>
+          </button>
+        </div>
+
+        <!-- Dica após escolha -->
+        <div class="tip-card situation-feedback animate-fade-in" id="situation-tip" style="display: none;">
+          <div class="tip-icon feedback-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="tip-content">
+            <span class="tip-tag" id="situation-feedback-badge">Passo Essencial</span>
+            <p class="tip-text">“Dê uma olhada na luz do local e sinta o substrato antes de regar. A muda pode ter saído do viveiro com o substrato ainda úmido.”</p>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" class="btn-primary" id="btn-see-result" disabled>
+            <span>Ver resultado do meu jardim 🌱</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- TELA 5: RESULTADO -->
+      <section class="quiz-step step-result" id="step-result" style="display: none;">
+        
+        <div class="result-celebration-card">
+          <div class="result-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>Projeto Concluído</span>
+          </div>
+          
+          <h2 class="result-title">Seu primeiro jardim ganhou forma 🌱</h2>
+          <p class="result-desc">Veja a composição visual do espaço que você planejou e os passos fundamentais para começar com segurança:</p>
+
+          <!-- Banner Visual Composto -->
+          <div class="result-hero-showcase">
+            <img id="result-scenario-img" src="" alt="Cenário do Jardim" class="result-bg-img">
+            <div class="result-showcase-overlay"></div>
+            
+            <div class="result-plant-overlay">
+              <img id="result-plant-img" src="" alt="Planta escolhida" class="result-plant-avatar">
+              <div class="result-plant-meta">
+                <span class="result-tag" id="result-plant-category">Planta</span>
+                <strong id="result-plant-name">Nome da Planta</strong>
+              </div>
+            </div>
+
+            <div class="result-scenario-tag" id="result-scenario-title">
+              Cenário
+            </div>
+          </div>
+
+          <!-- Resumo do Projeto -->
+          <div class="result-summary-box">
+            <div class="summary-line">
+              <span class="summary-label">Seu projeto:</span>
+              <p class="summary-value" id="result-project-text">um cantinho de temperos na varanda.</p>
+            </div>
+
+            <div class="summary-line">
+              <span class="summary-label">O que você separou no viveiro:</span>
+              <div class="result-cart-chips" id="result-cart-chips">
+                <!-- Chips do carrinho -->
+              </div>
+            </div>
+
+            <div class="summary-line">
+              <span class="summary-label">Seu próximo passo:</span>
+              <p class="summary-value" id="result-next-step-text">
+                observe quanto sol direto bate ali e consulte quais espécies combinam com essa condição. Depois, confira o que vale levar do viveiro.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card CTA: Guia de Bolso do Jardineiro -->
+        <div class="guide-cta-card">
+          <div class="guide-card-icon">
+            <img src="icon.svg" alt="Ícone Jardim Perene" width="48" height="48">
+          </div>
+          <div class="guide-card-content">
+            <h3 class="guide-cta-title">Quer levar esse projeto para casa?</h3>
+            <p class="guide-cta-body">
+              No <strong>Guia de Bolso do Jardineiro</strong>, você consulta quais plantas escolher, quais ferramentas comprar e como comparar os adubos. Comece pelo nível iniciante e avance conforme ganhar prática.
+            </p>
+            <a href="https://jardim-de-bolso-nu.vercel.app" target="_blank" rel="noopener noreferrer" class="btn-primary btn-guide-cta" id="btn-guide">
+              <span>Conhecer o Guia de Bolso</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Ações Auxiliares: Compartilhar e Refazer -->
+        <div class="result-secondary-actions">
+          <button type="button" class="btn-secondary" id="btn-share-result">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>Compartilhar meu resultado</span>
+          </button>
+          
+          <button type="button" class="btn-secondary" id="btn-restart-quiz">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <span>Refazer o quiz</span>
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Rodapé Discreto -->
+    <footer class="app-footer">
+      <p>Jardim Perene · Cultivo consciente e descomplicado 🌱</p>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification para feedbacks rápidos -->
+  <div class="toast-notification" id="toast" role="alert" aria-live="polite"></div>
+
+  <script src="quiz.js"></script>
+</body>
+</html>
