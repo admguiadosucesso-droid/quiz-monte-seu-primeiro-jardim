@@ -424,7 +424,6 @@
   function selectScenario(scenarioId) {
     state.scenario = scenarioId;
     syncScenarioSelectionUI();
-    dom.scenarioTip.style.display = 'flex';
     dom.btnNextScenario.disabled = false;
 
     const scen = QUIZ_DATA.scenarios[scenarioId];
@@ -455,7 +454,6 @@
     });
 
     if (state.scenario) {
-      dom.scenarioTip.style.display = 'flex';
       dom.btnNextScenario.disabled = false;
     } else {
       dom.btnNextScenario.disabled = true;
@@ -469,9 +467,8 @@
 
     const pl = QUIZ_DATA.plants[plantId];
     if (pl) {
-      dom.plantTipTitle.textContent = `Dica para ${pl.name}`;
-      dom.plantTipText.textContent = pl.tip;
-      dom.plantTip.style.display = 'flex';
+      if (dom.plantTipTitle) dom.plantTipTitle.textContent = `Dica para ${pl.name}`;
+      if (dom.plantTipText) dom.plantTipText.textContent = pl.tip;
       dom.btnNextPlant.disabled = false;
 
       // Atualiza o spotlight no canvas persistente no topo
@@ -506,9 +503,8 @@
 
     if (state.plant && QUIZ_DATA.plants[state.plant]) {
       const pl = QUIZ_DATA.plants[state.plant];
-      dom.plantTipTitle.textContent = `Dica para ${pl.name}`;
-      dom.plantTipText.textContent = pl.tip;
-      dom.plantTip.style.display = 'flex';
+      if (dom.plantTipTitle) dom.plantTipTitle.textContent = `Dica para ${pl.name}`;
+      if (dom.plantTipText) dom.plantTipText.textContent = pl.tip;
       dom.btnNextPlant.disabled = false;
     } else {
       dom.btnNextPlant.disabled = true;
@@ -650,9 +646,8 @@
     const item = QUIZ_DATA.itemsByMode[mode].find((i) => i.id === itemId);
 
     if (item && item.tip) {
-      dom.cartTipTitle.textContent = `Dica: ${item.title}`;
-      dom.cartTipText.textContent = item.tip;
-      dom.cartTip.style.display = 'flex';
+      if (dom.cartTipTitle) dom.cartTipTitle.textContent = `Dica: ${item.title}`;
+      if (dom.cartTipText) dom.cartTipText.textContent = item.tip;
     }
 
     renderCartStep();
@@ -713,7 +708,6 @@
     state.situationChoice = choiceNumber;
     syncSituationSelectionUI();
 
-    dom.situationTip.style.display = 'flex';
     dom.btnSeeResult.disabled = false;
 
     openTipPopup({
@@ -738,7 +732,6 @@
     });
 
     if (state.situationChoice) {
-      dom.situationTip.style.display = 'flex';
       dom.btnSeeResult.disabled = false;
     } else {
       dom.btnSeeResult.disabled = true;

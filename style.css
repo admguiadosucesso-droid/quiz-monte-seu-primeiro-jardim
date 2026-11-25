@@ -601,8 +601,9 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
    Cards de Dica & Feedback Contextual
    ========================================================================== */
 
+/* Cards de Dica Inline - Dicas aparecem exclusivamente no popup modal de 7 segundos */
 .tip-card {
-  display: flex;
+  display: none !important;
   align-items: flex-start;
   gap: 12px;
   background-color: var(--bg-card-subtle);
