@@ -745,6 +745,35 @@
     }
   }
 
+  // --- Imagem Personalizada de Acordo com o Resultado do Projeto ---
+  function getResultImage() {
+    const scenario = state.scenario || 'varanda';
+    const plant = state.plant || 'tempero';
+    const mode = getEffectiveCartMode();
+
+    let key = `${scenario}-${plant}`;
+    if (scenario === 'quintal') {
+      key = `quintal-${mode}-${plant}`;
+    }
+
+    const resultMap = {
+      'janela-folhagem': 'images/resultados/janela-folhagem.webp',
+      'janela-flor': 'images/resultados/janela-flor.webp',
+      'janela-tempero': 'images/resultados/janela-tempero.webp',
+      'varanda-folhagem': 'images/resultados/varanda-folhagem.webp',
+      'varanda-flor': 'images/resultados/varanda-flor.webp',
+      'varanda-tempero': 'images/resultados/varanda-tempero.webp',
+      'quintal-vaso-folhagem': 'images/resultados/quintal-vaso-folhagem.webp',
+      'quintal-vaso-flor': 'images/resultados/quintal-vaso-flor.webp',
+      'quintal-vaso-tempero': 'images/resultados/quintal-vaso-tempero.webp',
+      'quintal-canteiro-folhagem': 'images/resultados/quintal-canteiro-folhagem.webp',
+      'quintal-canteiro-flor': 'images/resultados/quintal-canteiro-flor.webp',
+      'quintal-canteiro-tempero': 'images/resultados/quintal-canteiro-tempero.webp'
+    };
+
+    return resultMap[key] || (QUIZ_DATA.scenarios[scenario] ? QUIZ_DATA.scenarios[scenario].image : 'images/resultados/varanda-tempero.webp');
+  }
+
   // --- Lógica: Tela de Resultado ---
   function renderResultStep() {
     const scen = QUIZ_DATA.scenarios[state.scenario] || QUIZ_DATA.scenarios.varanda;
@@ -752,8 +781,9 @@
     const mode = getEffectiveCartMode();
     const itemsMap = Object.fromEntries(QUIZ_DATA.itemsByMode[mode].map((i) => [i.id, i]));
 
-    // 1. Showcase Visual
-    dom.resultScenarioImg.src = scen.image;
+    // 1. Showcase Visual com imagem fotográfica personalizada do projeto concluído
+    const resultImgUrl = getResultImage();
+    dom.resultScenarioImg.src = resultImgUrl;
     dom.resultPlantImg.src = pl.image;
     dom.resultPlantCategory.textContent = pl.category;
     dom.resultPlantName.textContent = pl.name;
@@ -852,7 +882,7 @@
 
     const scenarioImg = new Image();
     scenarioImg.crossOrigin = 'anonymous';
-    scenarioImg.src = scen.image;
+    scenarioImg.src = getResultImage();
 
     const plantImg = new Image();
     plantImg.crossOrigin = 'anonymous';
