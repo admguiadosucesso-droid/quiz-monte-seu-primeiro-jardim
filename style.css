@@ -1691,28 +1691,6 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
   }
 }
 
-.btn-tip-popup-close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--borda-suave);
-  background-color: var(--bg-card-subtle);
-  color: var(--texto-secundario);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: var(--transicao-suave);
-}
-
-.btn-tip-popup-close:hover {
-  background-color: var(--borda-suave);
-  color: var(--texto-principal);
-}
-
 .tip-popup-badge-wrap {
   display: flex;
   flex-direction: column;
@@ -1722,8 +1700,8 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
 }
 
 .tip-popup-icon {
-  width: 56px;
-  height: 56px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--verde-folha-100), var(--verde-folha-200));
   color: var(--verde-floresta-800);
@@ -1780,7 +1758,7 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
   background-color: var(--bg-card-subtle);
   border-radius: 14px;
   padding: 12px 14px;
@@ -1820,11 +1798,4 @@ h1, h2, h3, h4, .brand-text, .intro-title, .result-title, .step-title {
 
 [data-theme="dark"] .tip-popup-timer-label strong {
   color: var(--verde-folha-300);
-}
-
-.tip-popup-action-btn {
-  width: 100%;
-  padding: 13px 18px;
-  font-size: 0.92rem;
-  justify-content: center;
 }

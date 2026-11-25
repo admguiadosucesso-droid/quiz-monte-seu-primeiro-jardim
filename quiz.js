@@ -224,18 +224,15 @@
     btnDownloadStory: document.getElementById('btn-download-story'),
     btnDownloadFeed: document.getElementById('btn-download-feed'),
 
-    // Elementos do Popup de Dica com 7 Segundos
+    // Elementos do Popup de Dica com 7 Segundos (Apenas contador automático)
     tipPopupModal: document.getElementById('tip-popup-modal'),
-    btnCloseTipPopup: document.getElementById('btn-close-tip-popup'),
     tipPopupIcon: document.getElementById('tip-popup-icon'),
     tipPopupTag: document.getElementById('tip-popup-tag'),
     tipPopupTitle: document.getElementById('tip-popup-title'),
     tipPopupText: document.getElementById('tip-popup-text'),
     tipPopupProgressFill: document.getElementById('tip-popup-progress-fill'),
     tipPopupTimerText: document.getElementById('tip-popup-timer-text'),
-    tipPopupCountdownNum: document.getElementById('tip-popup-countdown-num'),
-    btnTipPopupAdvance: document.getElementById('btn-tip-popup-advance'),
-    tipPopupBtnText: document.getElementById('tip-popup-btn-text')
+    tipPopupCountdownNum: document.getElementById('tip-popup-countdown-num')
   };
 
   // --- Inicialização ---
@@ -294,7 +291,7 @@
   const TIP_POPUP_TOTAL_MS = 7000;
   let tipPopupNextCallback = null;
 
-  function openTipPopup({ tag, title, text, iconSvg, nextAction, btnText = 'Avançar agora', timerPrefix = 'Próxima pergunta em' }) {
+  function openTipPopup({ tag, title, text, iconSvg, nextAction, timerPrefix = 'Avançando em' }) {
     // 1. Encerra qualquer timer ativo anterior
     closeTipPopup(false);
 
@@ -305,7 +302,6 @@
     if (iconSvg && dom.tipPopupIcon) {
       dom.tipPopupIcon.innerHTML = iconSvg;
     }
-    if (dom.tipPopupBtnText) dom.tipPopupBtnText.textContent = btnText;
 
     tipPopupNextCallback = nextAction;
 
@@ -1113,19 +1109,6 @@
     dom.btnSeeResult.addEventListener('click', () => {
       if (state.situationChoice) goToStep(5);
     });
-
-    // Eventos do Popup de Dica com 7 Segundos
-    if (dom.btnTipPopupAdvance) {
-      dom.btnTipPopupAdvance.addEventListener('click', advanceFromTipPopup);
-    }
-    if (dom.btnCloseTipPopup) {
-      dom.btnCloseTipPopup.addEventListener('click', () => closeTipPopup(true));
-    }
-    if (dom.tipPopupModal) {
-      dom.tipPopupModal.addEventListener('click', (e) => {
-        if (e.target === dom.tipPopupModal) closeTipPopup(true);
-      });
-    }
 
     // Tela de Resultado: Abrir Modal de Redes Sociais
     dom.btnShareResult.addEventListener('click', openShareModal);

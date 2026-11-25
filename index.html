@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <!-- Container Central Mobile-First -->
@@ -493,13 +493,9 @@
 
   </div>
 
-  <!-- Modal / Popup de Dica com Contagem Regressiva de 7 Segundos -->
+  <!-- Modal / Popup de Dica com Contagem Regressiva de 7 Segundos (Sem Botões) -->
   <div class="tip-popup-overlay" id="tip-popup-modal" role="dialog" aria-modal="true" aria-labelledby="tip-popup-title" style="display: none;">
     <div class="tip-popup-card animate-pop-in">
-      <button type="button" class="btn-tip-popup-close" id="btn-close-tip-popup" aria-label="Fechar dica">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-
       <div class="tip-popup-badge-wrap">
         <div class="tip-popup-icon" id="tip-popup-icon">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -513,21 +509,16 @@
         Antes de levar uma muda para casa, observe quanto sol direto bate nesse lugar ao longo do dia.
       </p>
 
-      <!-- Seção do temporizador com barra e contagem regressiva -->
+      <!-- Temporizador automático de 7 segundos -->
       <div class="tip-popup-timer-section">
         <div class="tip-popup-progress-track">
           <div class="tip-popup-progress-fill" id="tip-popup-progress-fill"></div>
         </div>
         <div class="tip-popup-timer-label">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span id="tip-popup-timer-text">Próxima pergunta em <strong id="tip-popup-countdown-num">7</strong>s...</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="tip-popup-timer-text">Avançando em <strong id="tip-popup-countdown-num">7</strong>s...</span>
         </div>
       </div>
-
-      <button type="button" class="btn-primary tip-popup-action-btn" id="btn-tip-popup-advance">
-        <span id="tip-popup-btn-text">Avançar agora</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </button>
     </div>
   </div>
 
@@ -632,6 +623,6 @@
   <!-- Toast Notification para feedbacks rápidos -->
   <div class="toast-notification" id="toast" role="alert" aria-live="polite"></div>
 
-  <script src="quiz.js?v=3"></script>
+  <script src="quiz.js?v=4"></script>
 </body>
 </html>

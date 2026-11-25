@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quiz-jardim-v3';
+const CACHE_NAME = 'quiz-jardim-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
