@@ -222,7 +222,20 @@
     shareX: document.getElementById('share-x'),
     shareTelegram: document.getElementById('share-telegram'),
     btnDownloadStory: document.getElementById('btn-download-story'),
-    btnDownloadFeed: document.getElementById('btn-download-feed')
+    btnDownloadFeed: document.getElementById('btn-download-feed'),
+
+    // Elementos do Popup de Dica com 7 Segundos
+    tipPopupModal: document.getElementById('tip-popup-modal'),
+    btnCloseTipPopup: document.getElementById('btn-close-tip-popup'),
+    tipPopupIcon: document.getElementById('tip-popup-icon'),
+    tipPopupTag: document.getElementById('tip-popup-tag'),
+    tipPopupTitle: document.getElementById('tip-popup-title'),
+    tipPopupText: document.getElementById('tip-popup-text'),
+    tipPopupProgressFill: document.getElementById('tip-popup-progress-fill'),
+    tipPopupTimerText: document.getElementById('tip-popup-timer-text'),
+    tipPopupCountdownNum: document.getElementById('tip-popup-countdown-num'),
+    btnTipPopupAdvance: document.getElementById('btn-tip-popup-advance'),
+    tipPopupBtnText: document.getElementById('tip-popup-btn-text')
   };
 
   // --- Inicialização ---
@@ -270,9 +283,86 @@
   // --- Navegação de Etapas ---
   function goToStep(targetStep) {
     if (targetStep < 0 || targetStep > 5) return;
+    closeTipPopup(true);
     state.step = targetStep;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     renderStep();
+  }
+
+  // --- Popup de Dica com Contagem Regressiva de 7 Segundos ---
+  let tipPopupInterval = null;
+  const TIP_POPUP_TOTAL_MS = 7000;
+  let tipPopupNextCallback = null;
+
+  function openTipPopup({ tag, title, text, iconSvg, nextAction, btnText = 'Avançar agora', timerPrefix = 'Próxima pergunta em' }) {
+    // 1. Encerra qualquer timer ativo anterior
+    closeTipPopup(false);
+
+    // 2. Preenche dados no popup
+    if (dom.tipPopupTag) dom.tipPopupTag.textContent = tag || 'Dica do Jardineiro';
+    if (dom.tipPopupTitle) dom.tipPopupTitle.textContent = title || '';
+    if (dom.tipPopupText) dom.tipPopupText.textContent = text || '';
+    if (iconSvg && dom.tipPopupIcon) {
+      dom.tipPopupIcon.innerHTML = iconSvg;
+    }
+    if (dom.tipPopupBtnText) dom.tipPopupBtnText.textContent = btnText;
+
+    tipPopupNextCallback = nextAction;
+
+    // Reseta barra e número inicial
+    if (dom.tipPopupProgressFill) dom.tipPopupProgressFill.style.width = '100%';
+    if (dom.tipPopupCountdownNum) dom.tipPopupCountdownNum.textContent = '7';
+    if (dom.tipPopupTimerText) {
+      dom.tipPopupTimerText.innerHTML = `${timerPrefix} <strong id="tip-popup-countdown-num">7</strong>s...`;
+    }
+
+    // 3. Exibe o modal
+    if (dom.tipPopupModal) {
+      dom.tipPopupModal.style.display = 'flex';
+    }
+
+    // 4. Inicia contagem regressiva de 7 segundos
+    const startTime = Date.now();
+    tipPopupInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, TIP_POPUP_TOTAL_MS - elapsed);
+      const secondsLeft = Math.ceil(remaining / 1000);
+      const pct = (remaining / TIP_POPUP_TOTAL_MS) * 100;
+
+      if (dom.tipPopupProgressFill) {
+        dom.tipPopupProgressFill.style.width = `${pct}%`;
+      }
+      const numEl = document.getElementById('tip-popup-countdown-num');
+      if (numEl) numEl.textContent = secondsLeft.toString();
+
+      if (remaining <= 0) {
+        clearInterval(tipPopupInterval);
+        tipPopupInterval = null;
+        advanceFromTipPopup();
+      }
+    }, 100);
+  }
+
+  function advanceFromTipPopup() {
+    closeTipPopup(false);
+    if (typeof tipPopupNextCallback === 'function') {
+      const cb = tipPopupNextCallback;
+      tipPopupNextCallback = null;
+      cb();
+    }
+  }
+
+  function closeTipPopup(userCancelled = true) {
+    if (tipPopupInterval) {
+      clearInterval(tipPopupInterval);
+      tipPopupInterval = null;
+    }
+    if (dom.tipPopupModal) {
+      dom.tipPopupModal.style.display = 'none';
+    }
+    if (userCancelled) {
+      tipPopupNextCallback = null;
+    }
   }
 
   function renderStep() {
@@ -340,6 +430,19 @@
     syncScenarioSelectionUI();
     dom.scenarioTip.style.display = 'flex';
     dom.btnNextScenario.disabled = false;
+
+    const scen = QUIZ_DATA.scenarios[scenarioId];
+    if (scen) {
+      openTipPopup({
+        tag: 'Dica do Jardineiro',
+        title: scen.shortTitle,
+        text: scen.tip,
+        iconSvg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>',
+        nextAction: () => goToStep(2),
+        btnText: 'Ir para a primeira planta',
+        timerPrefix: 'Próxima pergunta em'
+      });
+    }
   }
 
   function syncScenarioSelectionUI() {
@@ -379,6 +482,16 @@
       dom.plantSpotlight.style.display = 'inline-flex';
       dom.plantSpotlightImg.src = pl.image;
       dom.plantBadgeText.textContent = pl.name;
+
+      openTipPopup({
+        tag: `Dica para ${pl.name}`,
+        title: pl.name,
+        text: pl.tip,
+        iconSvg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4.1 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>',
+        nextAction: () => goToStep(3),
+        btnText: 'Ir para o carrinho',
+        timerPrefix: 'Próxima pergunta em'
+      });
     }
   }
 
@@ -547,6 +660,31 @@
     }
 
     renderCartStep();
+
+    // Quando completa os 3 itens do carrinho, dispara o popup educativo de 7 segundos
+    if (state.cart.length === 3) {
+      let cartTipTag = 'Carrinho Montado!';
+      let cartTipTitle = 'Combinação para seu plantio';
+      let cartTipText = '';
+
+      if (state.cart.includes('adubo')) {
+        cartTipText = '“Colocou adubo no carrinho? Vale conferir primeiro se a muda precisa dele agora. O tipo de planta e o substrato influenciam essa escolha.”';
+      } else if (mode === 'vaso') {
+        cartTipText = '“Excelente combinação! Muda + vaso com furos + substrato adequado é o trio ideal para o primeiro plantio.”';
+      } else {
+        cartTipText = '“Excelente combinação! Muda, substrato rico e ferramentas adequadas preparam o solo do seu canteiro.”';
+      }
+
+      openTipPopup({
+        tag: cartTipTag,
+        title: cartTipTitle,
+        text: cartTipText,
+        iconSvg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>',
+        nextAction: () => goToStep(4),
+        btnText: 'Ir para a situação real',
+        timerPrefix: 'Próxima pergunta em'
+      });
+    }
   }
 
   function removeFromCart(itemId) {
@@ -581,6 +719,16 @@
 
     dom.situationTip.style.display = 'flex';
     dom.btnSeeResult.disabled = false;
+
+    openTipPopup({
+      tag: 'Passo Essencial',
+      title: 'A muda chegou em casa!',
+      text: '“Dê uma olhada na luz do local e sinta o substrato antes de regar. A muda pode ter saído do viveiro com o substrato ainda úmido.”',
+      iconSvg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      nextAction: () => goToStep(5),
+      btnText: 'Ver resultado do meu jardim',
+      timerPrefix: 'Abrindo o resultado em'
+    });
   }
 
   function syncSituationSelectionUI() {
@@ -965,6 +1113,19 @@
     dom.btnSeeResult.addEventListener('click', () => {
       if (state.situationChoice) goToStep(5);
     });
+
+    // Eventos do Popup de Dica com 7 Segundos
+    if (dom.btnTipPopupAdvance) {
+      dom.btnTipPopupAdvance.addEventListener('click', advanceFromTipPopup);
+    }
+    if (dom.btnCloseTipPopup) {
+      dom.btnCloseTipPopup.addEventListener('click', () => closeTipPopup(true));
+    }
+    if (dom.tipPopupModal) {
+      dom.tipPopupModal.addEventListener('click', (e) => {
+        if (e.target === dom.tipPopupModal) closeTipPopup(true);
+      });
+    }
 
     // Tela de Resultado: Abrir Modal de Redes Sociais
     dom.btnShareResult.addEventListener('click', openShareModal);
